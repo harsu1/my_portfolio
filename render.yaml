@@ -1,0 +1,63 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# Deployed as a Static Site rather than a Node web service: every route in this
+# project prerenders at build time, so there is nothing for a server to do at
+# request time. That means it is served from Render's CDN on the free tier with
+# no cold starts — a web service on the free plan sleeps after 15 minutes of
+# inactivity and takes ~50s to wake, which is the worst possible behaviour for a
+# link you hand to a recruiter.
+#
+# To deploy: Render Dashboard → New → Blueprint → connect this repo.
+
+services:
+  - type: web
+    runtime: static
+    name: harsh-sahu-portfolio
+    # `npm ci` installs exactly what package-lock.json pins, so a deploy can
+    # never silently pick up a different dependency version than was tested.
+    buildCommand: npm ci && npm run build
+    # `output: "export"` in next.config.ts writes the site here.
+    staticPublishPath: ./out
+    # Only rebuild when something that affects the build actually changes.
+    buildFilter:
+      paths:
+        - src/**
+        - public/**
+        - package.json
+        - package-lock.json
+        - next.config.ts
+        - tsconfig.json
+        - postcss.config.mjs
+
+    envVars:
+      # Absolute base URL baked into canonical, sitemap, robots and og:image.
+      # Change this (not the code) when a custom domain is attached, then
+      # trigger a redeploy so the metadata is regenerated.
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://harsh-sahu-portfolio.onrender.com
+
+    headers:
+      # Hashed build assets are immutable — cache them for a year.
+      - path: /_next/static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+      # HTML must revalidate, or a deploy will not reach people who have
+      # already visited the site.
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+
+      # The site frames nothing and should not be framed.
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), interest-cohort=()

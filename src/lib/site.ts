@@ -1,11 +1,20 @@
 /**
  * Single place to change deployment-wide identity.
  *
- * `url` drives metadataBase, the sitemap, robots.txt and every Open Graph tag.
- * Update it once here before deploying and the whole SEO surface follows.
+ * `url` drives metadataBase, the canonical link, sitemap.xml, robots.txt and
+ * every Open Graph tag — including the absolute og:image URL that LinkedIn and
+ * Twitter fetch when the site is shared. Point it at the wrong host and link
+ * previews break silently.
+ *
+ * It reads `NEXT_PUBLIC_SITE_URL` at build time so the deployed URL lives in
+ * Render's config rather than in the repo, which means adding a custom domain
+ * later is an environment change and not a commit. The fallback keeps local
+ * builds and `npm run build` working with no env set.
  */
+const DEFAULT_URL = "https://harsh-sahu-portfolio.onrender.com";
+
 export const site = {
-  url: "https://harshsahu.dev", // TODO: replace with the real domain before deploy
+  url: (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_URL).replace(/\/$/, ""),
   name: "Harsh Sahu",
   role: "Full Stack Engineer",
   title: "Harsh Sahu — Full Stack Engineer | AI • Backend • Web3",

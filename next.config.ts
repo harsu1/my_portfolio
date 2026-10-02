@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
   /**
    * Hosts allowed to request dev-only assets (HMR, dev endpoints).
    *

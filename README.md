@@ -12,14 +12,41 @@ npm start       # serve the production build
 npm run lint
 ```
 
-## Before deploying
+## Deploying (Render)
 
-Two values to set, both in [`src/lib/site.ts`](src/lib/site.ts):
+The site is a **static export** — every route prerenders at build time, so it
+deploys as a Render Static Site rather than a Node web service. That means CDN
+delivery on the free tier with no cold starts; a free web service sleeps after
+15 minutes and takes ~50s to wake, which is the worst behaviour for a link you
+hand to a recruiter.
 
-| Field         | Why                                                              |
-| ------------- | ---------------------------------------------------------------- |
-| `site.url`    | Drives `metadataBase`, canonical URL, `sitemap.xml`, `robots.txt` and every Open Graph tag. |
-| `links.github`| Currently `null`, so GitHub links are omitted everywhere rather than rendered dead. Set it to `"https://github.com/<handle>"` and the hero, contact section and footer pick it up automatically. |
+[`render.yaml`](render.yaml) is a Blueprint, so the whole service is defined in
+the repo:
+
+```
+Render Dashboard → New → Blueprint → connect this repo
+```
+
+| Setting               | Value                      |
+| --------------------- | -------------------------- |
+| Build command         | `npm ci && npm run build`  |
+| Publish directory     | `./out`                    |
+| `NEXT_PUBLIC_SITE_URL`| the deployed origin        |
+
+**Attaching a custom domain:** add it in Render, then update
+`NEXT_PUBLIC_SITE_URL` and redeploy. That variable is the single source for
+`metadataBase`, the canonical link, `sitemap.xml`, `robots.txt` and the absolute
+`og:image` URL — if it points at the wrong host, link previews break silently
+while the site itself looks fine.
+
+> Static export is set by `output: "export"` in [`next.config.ts`](next.config.ts).
+> Removing that line reverts to a full Next.js server build, at which point the
+> `export const dynamic = "force-static"` lines in `sitemap.ts` and `robots.ts`
+> become optional.
+
+GitHub links are driven by `links.github` in [`src/lib/site.ts`](src/lib/site.ts).
+Setting it back to `null` removes GitHub from the hero, contact section, footer
+and JSON-LD rather than leaving a dead link.
 
 ## Structure
 
