@@ -172,18 +172,6 @@
   }
 }
 
-@keyframes pulse-ring {
-  0% {
-    opacity: 0.55;
-    transform: scale(1);
-  }
-  70%,
-  100% {
-    opacity: 0;
-    transform: scale(2.4);
-  }
-}
-
 /* ───────────────────────────────────────────────────────────────────────────
    Reduced motion
 

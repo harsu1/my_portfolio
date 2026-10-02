@@ -31,13 +31,19 @@ export default function Hero() {
       />
 
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        {/* Metadata strip, not a status pill.
+            Uses the same mono / uppercase / hairline grammar as every section
+            eyebrow on the page, so the hero opens in the site's own voice
+            instead of a floating badge borrowed from every other portfolio. */}
         <Reveal>
-          <p className="inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/80 py-1.5 pr-4 pl-3 backdrop-blur-sm">
-            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-live motion-safe:animate-[pulse-ring_2.4s_ease-out_infinite]" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-live" />
-            </span>
-            <span className="font-mono text-[11px] tracking-wide text-ink-muted">
+          <p className="eyebrow flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="text-ink-muted">{site.location}</span>
+            <span aria-hidden="true" className="h-px w-10 bg-line-strong" />
+            <span className="inline-flex items-center gap-2 text-ink-muted">
+              <span
+                aria-hidden="true"
+                className="h-1.25 w-1.25 rotate-45 bg-violet"
+              />
               Open to connecting
             </span>
           </p>

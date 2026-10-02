@@ -40,9 +40,10 @@ export default function Contact() {
         </Reveal>
 
         <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-          <Reveal delay={0.08} className="max-w-xl space-y-3">
+          {/* Only the email is worth a copy affordance — location is stated in
+              the metadata row below and nobody copies a city to their clipboard. */}
+          <Reveal delay={0.08} className="max-w-xl">
             <CopyField label="Email" value={links.email} />
-            <CopyField label="Location" value={site.location} />
           </Reveal>
 
           <Reveal delay={0.14}>
@@ -83,21 +84,30 @@ export default function Contact() {
         </div>
 
         <Reveal delay={0.2}>
-          <div className="mt-16 flex flex-wrap items-center gap-3 border-t border-line pt-8">
-            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-live motion-safe:animate-[pulse-ring_2.4s_ease-out_infinite]" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-live" />
-            </span>
-            <span className="font-mono text-xs text-ink-muted">
-              Open to connecting
-            </span>
-            <span className="text-line-strong" aria-hidden="true">
-              ·
-            </span>
-            <span className="font-mono text-xs text-ink-faint">
-              Currently Full Stack Engineer at SDLC Corp
-            </span>
-          </div>
+          {/* Same metadata grammar as the hero strip — one status treatment
+              across the page rather than two different badges. */}
+          <dl className="mt-16 grid gap-x-10 gap-y-5 border-t border-line pt-8 sm:grid-cols-3">
+            <div>
+              <dt className="eyebrow">Status</dt>
+              <dd className="mt-1.5 inline-flex items-center gap-2 text-sm text-ink">
+                <span
+                  aria-hidden="true"
+                  className="h-1.25 w-1.25 rotate-45 bg-violet"
+                />
+                Open to connecting
+              </dd>
+            </div>
+            <div>
+              <dt className="eyebrow">Currently</dt>
+              <dd className="mt-1.5 text-sm text-ink-muted">
+                Full Stack Engineer, SDLC Corp
+              </dd>
+            </div>
+            <div>
+              <dt className="eyebrow">Based in</dt>
+              <dd className="mt-1.5 text-sm text-ink-muted">{site.location}</dd>
+            </div>
+          </dl>
         </Reveal>
       </div>
     </section>
