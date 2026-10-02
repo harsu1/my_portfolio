@@ -31,21 +31,17 @@ export default function Hero() {
       />
 
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
-        {/* Metadata strip, not a status pill.
-            Uses the same mono / uppercase / hairline grammar as every section
-            eyebrow on the page, so the hero opens in the site's own voice
-            instead of a floating badge borrowed from every other portfolio. */}
+        {/* Status only — stated in the same mono / uppercase eyebrow grammar as
+            every section label, rather than as a floating badge. Location lives
+            in the About and Contact sections, where someone is actually looking
+            for it. */}
         <Reveal>
-          <p className="eyebrow flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span className="text-ink-muted">{site.location}</span>
-            <span aria-hidden="true" className="h-px w-10 bg-line-strong" />
-            <span className="inline-flex items-center gap-2 text-ink-muted">
-              <span
-                aria-hidden="true"
-                className="h-1.25 w-1.25 rotate-45 bg-violet"
-              />
-              Open to connecting
-            </span>
+          <p className="eyebrow inline-flex items-center gap-2 text-ink-muted">
+            <span
+              aria-hidden="true"
+              className="h-1.25 w-1.25 rotate-45 bg-violet"
+            />
+            Open to connecting
           </p>
         </Reveal>
 
