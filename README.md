@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Harsh Sahu — Portfolio
 
-## Getting Started
+Personal portfolio for a Full Stack Engineer working on transactional systems,
+event-driven architecture, LLM integration and multi-chain Web3.
 
-First, run the development server:
+Built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4 and Motion.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build   # production build — all routes prerender to static
+npm start       # serve the production build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Before deploying
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Two values to set, both in [`src/lib/site.ts`](src/lib/site.ts):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Field         | Why                                                              |
+| ------------- | ---------------------------------------------------------------- |
+| `site.url`    | Drives `metadataBase`, canonical URL, `sitemap.xml`, `robots.txt` and every Open Graph tag. |
+| `links.github`| Currently `null`, so GitHub links are omitted everywhere rather than rendered dead. Set it to `"https://github.com/<handle>"` and the hero, contact section and footer pick it up automatically. |
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    layout.tsx            Fonts, metadata, Person JSON-LD, motion policy
+    page.tsx              Server Component — composes the sections in scroll order
+    globals.css           Design tokens (@theme), base layer, reduced-motion policy
+    opengraph-image.tsx   OG card generated at build time via next/og
+    sitemap.ts robots.ts
+  lib/
+    site.ts               Deployment identity and nav sections
+    profile.ts            Experience, stack, evolution — the content source of truth
+    projects.ts           Case studies
+    flow.ts               Declarative specs for all four architecture diagrams
+    knowledge.ts          Local retrieval behind the terminal and assistant
+    useHydrated.ts        Hydration-safe client-only value hook
+  components/
+    layout/               Nav, Footer, MotionProvider
+    sections/             One file per page section
+    ui/                   Section, Reveal, MagneticLink, CopyField, Counter, Icons
+    viz/                  FlowDiagram (the diagram engine), HeroField (hero canvas)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes on a few decisions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Content is data.** Everything the page says lives in `src/lib/*`. The
+terminal, the assistant, the diagrams and the rendered sections all read from
+the same objects, so a change to the profile propagates everywhere and output
+cannot drift from the page.
 
-## Deploy on Vercel
+**One diagram engine.** The CRM event pipeline, the wallet transaction flow,
+the system architecture and the AI pipeline are four `FlowSpec` objects rendered
+by one component. Layout is CSS grid, so diagrams reflow to a vertical stack on
+mobile; edges are measured from the live DOM and redrawn by a `ResizeObserver`,
+which is why there is no separate mobile diagram code path.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Production vs toolkit.** Technologies carry a `maturity` flag. Anything the
+profile does not establish as production use is marked "toolkit" and rendered
+differently, rather than being flattened into one undifferentiated logo wall.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**The assistant does not call a model.** It is retrieval over a local knowledge
+base, and the UI says so. It depends only on the `AnswerSource` interface, so
+swapping in a real LLM means implementing one function — no UI changes, and no
+API key in this repo.
+
+**Reduced motion is handled centrally** by `MotionConfig reducedMotion="user"`
+plus a global CSS rule, so components never branch their rendered output on a
+client-only media query. A `<noscript>` rule forces scroll-reveal content
+visible when JavaScript does not run.

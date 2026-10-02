@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Same mark as components/ui/Monogram.tsx, on a dark tile so it holds up
+       against both light and dark browser chrome. Strokes are heavier than the
+       in-page version because this renders down to 16px in a tab. -->
+  <rect width="32" height="32" rx="7" fill="#0c0c11"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" fill="none" stroke="#2a2a38"/>
+  <g transform="translate(4 4)">
+    <path d="M6.5 4.5v15M17.5 4.5v15" stroke="#ededf2" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M6.5 12h11" stroke="#ededf2" stroke-width="2.6" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="12" cy="12" r="2.95" fill="#7c5cff"/>
+    <circle cx="12" cy="12" r="1.05" fill="#0c0c11"/>
+  </g>
+</svg>

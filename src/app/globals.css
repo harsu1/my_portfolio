@@ -1,26 +1,206 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ───────────────────────────────────────────────────────────────────────────
+   Design tokens
+
+   A deliberately small palette: one near-black base with four surface steps,
+   three text weights, and two accents. Everything else is composed from these.
+   Accents are used for emphasis and state — never as decoration.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Base — near-black through raised surfaces */
+  --color-canvas: #08080b;
+  --color-surface: #0c0c11;
+  --color-raised: #121219;
+  --color-overlay: #16161f;
+
+  /* Hairlines */
+  --color-line: #1e1e28;
+  --color-line-strong: #2a2a38;
+
+  /* Text */
+  --color-ink: #ededf2;
+  --color-ink-muted: #9b9bab;
+  --color-ink-faint: #6a6a7a;
+
+  /* Accents */
+  --color-violet: #7c5cff;
+  --color-violet-soft: #a594ff;
+  --color-cyan: #2dd4de;
+  --color-cyan-soft: #7fe7ed;
+
+  /* Semantic */
+  --color-live: #34d399;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono-code), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Motion — one easing curve across the whole site */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    scroll-behavior: smooth;
+    /* Sticky nav height + breathing room, so anchors never land under the bar. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Visible, consistent focus for keyboard users across every interactive element. */
+  :focus-visible {
+    outline: 2px solid var(--color-violet);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-violet) 35%, transparent);
+    color: var(--color-ink);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 999px;
+    border: 2px solid var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a4d;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Eyebrow label used to index every section. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  /* Hairline grid used behind the hero. Masked so it fades rather than ends. */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 35%, #000 20%, transparent 78%);
+    mask-image: radial-gradient(ellipse 90% 60% at 50% 35%, #000 20%, transparent 78%);
+  }
+
+  /* Single ambient wash behind the hero — one gradient, not a pile of blobs. */
+  .ambient-wash {
+    background:
+      radial-gradient(ellipse 70% 50% at 18% 0%, color-mix(in oklab, var(--color-violet) 16%, transparent), transparent 62%),
+      radial-gradient(ellipse 60% 45% at 85% 22%, color-mix(in oklab, var(--color-cyan) 9%, transparent), transparent 60%);
+  }
+
+  /* Top hairline highlight — reads as a lit edge rather than a glass panel. */
+  .lit-edge {
+    position: relative;
+  }
+  .lit-edge::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in oklab, var(--color-violet) 45%, transparent),
+      transparent
+    );
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  /* Keeps long technical output (SQL, diagrams, tables) scrollable in-place
+     instead of forcing the page body to scroll sideways on mobile. */
+  .scroll-x {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Animated dashes along diagram edges, used only when motion is allowed. */
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Reduced motion
+
+   Honoured globally rather than per-component, so nothing animated can slip
+   through. JS-driven animation checks the same query via useReducedMotion.
+   ─────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
