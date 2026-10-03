@@ -34,7 +34,7 @@ services:
       # Change this (not the code) when a custom domain is attached, then
       # trigger a redeploy so the metadata is regenerated.
       - key: NEXT_PUBLIC_SITE_URL
-        value: https://harsh-sahu-portfolio.onrender.com
+        value: https://harsh-sahu-portfolio-501s.onrender.com
 
     headers:
       # Hashed build assets are immutable — cache them for a year.

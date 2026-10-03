@@ -11,7 +11,7 @@
  * later is an environment change and not a commit. The fallback keeps local
  * builds and `npm run build` working with no env set.
  */
-const DEFAULT_URL = "https://harsh-sahu-portfolio.onrender.com";
+const DEFAULT_URL = "https://harsh-sahu-portfolio-501s.onrender.com";
 
 export const site = {
   url: (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_URL).replace(/\/$/, ""),
