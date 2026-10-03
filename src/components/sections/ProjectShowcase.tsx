@@ -45,8 +45,13 @@ export default function ProjectShowcase({ projects }: { projects: Project[] }) {
   return (
     <>
       <div className="space-y-6">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} onOpen={open} />
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            index={index}
+            onOpen={open}
+          />
         ))}
       </div>
 
@@ -57,9 +62,11 @@ export default function ProjectShowcase({ projects }: { projects: Project[] }) {
 
 function ProjectCard({
   project,
+  index,
   onOpen,
 }: {
   project: Project;
+  index: number;
   onOpen: (id: string, trigger: HTMLButtonElement) => void;
 }) {
   const accent = ACCENT[project.accent];
@@ -79,6 +86,10 @@ function ProjectCard({
 
         <span className="relative block">
           <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="font-mono text-xs text-ink-faint tabular-nums">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span aria-hidden="true" className="h-px w-6 bg-line-strong" />
             <span className={`font-mono text-xs ${accent.text}`}>
               {project.kind}
             </span>

@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as m from "motion/react-m";
 import { AnimatePresence } from "motion/react";
-import { Menu, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import Monogram from "@/components/ui/Monogram";
+import { openCommandPalette } from "./CommandPalette";
+import { useHydrated } from "@/lib/useHydrated";
 import { sections, type SectionId } from "@/lib/site";
 
 /**
@@ -21,6 +23,7 @@ import { sections, type SectionId } from "@/lib/site";
  * the last entry.
  */
 export default function Nav() {
+  const hydrated = useHydrated();
   const [active, setActive] = useState<SectionId>("home");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -84,6 +87,11 @@ export default function Nav() {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
+
+  // Platform is a client-only fact, so it is read only after hydration —
+  // otherwise the server would render one label and the client another.
+  const shortcutLabel =
+    hydrated && /Mac|iPhone|iPad/.test(navigator.userAgent) ? "⌘K" : "Ctrl K";
 
   const go = useCallback((id: SectionId) => {
     setOpen(false);
@@ -173,21 +181,37 @@ export default function Nav() {
             })}
           </ul>
 
-          <button
-            ref={toggleRef}
-            type="button"
-            onClick={() => setOpen((prev) => !prev)}
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            aria-label={open ? "Close navigation" : "Open navigation"}
-            className="rounded-full border border-line bg-raised p-2 text-ink-muted transition-colors hover:text-ink md:hidden"
-          >
-            {open ? (
-              <X size={16} aria-hidden="true" />
-            ) : (
-              <Menu size={16} aria-hidden="true" />
-            )}
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            {/* Palette trigger. Carries the shortcut as a visible hint on
+                desktop; on touch, where there is no ⌘K, it is the only way in. */}
+            <button
+              type="button"
+              onClick={openCommandPalette}
+              aria-label="Open command palette"
+              className="flex items-center gap-2 rounded-full border border-line bg-raised py-1.5 pr-2 pl-3 text-ink-faint transition-colors hover:border-line-strong hover:text-ink"
+            >
+              <Search size={13} aria-hidden="true" />
+              <kbd className="hidden rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[10px] sm:inline">
+                {shortcutLabel}
+              </kbd>
+            </button>
+
+            <button
+              ref={toggleRef}
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={open ? "Close navigation" : "Open navigation"}
+              className="rounded-full border border-line bg-raised p-2 text-ink-muted transition-colors hover:text-ink md:hidden"
+            >
+              {open ? (
+                <X size={16} aria-hidden="true" />
+              ) : (
+                <Menu size={16} aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </nav>
       </header>
 

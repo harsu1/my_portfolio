@@ -1,4 +1,5 @@
 import Nav from "@/components/layout/Nav";
+import CommandPalette from "@/components/layout/CommandPalette";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
@@ -23,6 +24,7 @@ export default function Home() {
   return (
     <>
       <Nav />
+      <CommandPalette />
       <main id="main">
         <Hero />
         <About />

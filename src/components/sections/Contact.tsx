@@ -44,6 +44,9 @@ export default function Contact() {
               the metadata row below and nobody copies a city to their clipboard. */}
           <Reveal delay={0.08} className="max-w-xl">
             <CopyField label="Email" value={links.email} />
+            <p className="mt-3 text-sm text-ink-faint">
+              Email is the fastest way to reach me, and I read every one.
+            </p>
           </Reveal>
 
           <Reveal delay={0.14}>
