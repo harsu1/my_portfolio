@@ -9,8 +9,8 @@ export default function Skills() {
       id="skills"
       index="06"
       eyebrow="Engineering DNA"
-      title="A logo grid proves nothing"
-      lead="Seven layers, and what each technology actually does in the systems I build. Select any one of them."
+      title="Logos are the easy part"
+      lead="Seven layers of the stack, and what every piece actually does in the systems I build. Select any one of them."
     >
       <Reveal>
         <StackExplorer groups={stackGroups} />

@@ -3,15 +3,17 @@
 import { useState } from "react";
 import * as m from "motion/react-m";
 import { AnimatePresence, useReducedMotion } from "motion/react";
+import TechIcon from "@/components/ui/TechIcon";
 import type { StackGroup } from "@/lib/profile";
 
 /**
  * Interactive stack breakdown.
  *
- * The point of this section is that a logo grid proves nothing — so every chip
- * is a button that reveals what the technology is actually used for, and each
- * one carries an honest production/toolkit marker rather than implying uniform
- * depth across forty logos.
+ * Brand marks make the list scannable, but they are deliberately the quietest
+ * part of each chip: monochrome, small, and subordinate to the name. The
+ * substance is the note that appears on selection — what the technology is
+ * actually used for — plus an honest production/toolkit marker, so the section
+ * never implies uniform depth across forty logos.
  *
  * Hover previews and click pins, which keeps it usable on touch (where there is
  * no hover) and on keyboard (where focus drives the same preview).
@@ -19,20 +21,26 @@ import type { StackGroup } from "@/lib/profile";
 export default function StackExplorer({ groups }: { groups: StackGroup[] }) {
   return (
     <>
+      {/* The legend shows the two chip treatments themselves rather than
+          abstract swatches, so the distinction is readable at a glance. */}
       <div className="mb-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-line py-4">
         <span className="eyebrow">Legend</span>
         <span className="flex items-center gap-2 text-xs text-ink-muted">
           <span
             aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-violet"
-          />
+            className="rounded-full border border-solid border-line-strong bg-raised px-2 py-0.5 font-mono text-[10px]"
+          >
+            solid
+          </span>
           Used in production work
         </span>
         <span className="flex items-center gap-2 text-xs text-ink-muted">
           <span
             aria-hidden="true"
-            className="h-2 w-2 rounded-full border border-dashed border-ink-faint"
-          />
+            className="rounded-full border border-dashed border-line-strong bg-raised px-2 py-0.5 font-mono text-[10px]"
+          >
+            dashed
+          </span>
           Working toolkit — not a production claim
         </span>
       </div>
@@ -83,7 +91,7 @@ function GroupCard({ group }: { group: StackGroup }) {
                 setPinned((prev) => (prev === item.name ? null : item.name))
               }
               className={[
-                "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[13px]",
+                "inline-flex items-center gap-2 rounded-full py-1.5 pr-3 pl-2.5 text-[13px]",
                 "border transition-all duration-200 motion-safe:hover:-translate-y-px",
                 isProd ? "border-solid" : "border-dashed",
                 isActive
@@ -91,14 +99,13 @@ function GroupCard({ group }: { group: StackGroup }) {
                   : "border-line-strong bg-raised text-ink-muted hover:border-ink-faint hover:text-ink",
               ].join(" ")}
             >
-              {isProd && (
-                <span
-                  aria-hidden="true"
-                  className={`h-1.5 w-1.5 rounded-full transition-colors ${
-                    isActive ? "bg-violet" : "bg-ink-faint"
-                  }`}
-                />
-              )}
+              <TechIcon
+                name={item.name}
+                size={13}
+                className={`shrink-0 transition-colors ${
+                  isActive ? "text-violet-soft" : "text-ink-faint"
+                }`}
+              />
               {item.name}
             </button>
           );
